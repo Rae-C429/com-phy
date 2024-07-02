@@ -29,7 +29,7 @@ print("\n")
 ```python
 for i in range(0, 4):
     b = sum(a[i, :])
-    print("第", i, "行總和=", b)
+    print("ro", i, "sum=", b)
 print("\n")
 ```
 
@@ -47,7 +47,8 @@ print(a)
 `a[2] = a[0, :] + a[2, :]` 將第 0 行與第 2 行相加並將結果存儲在第 2 行。
 最後打印更新後的矩陣`a`。
 
-##結果
+## 結果
+
 這個程式展示了使用 NumPy 的基本陣列操作，包括創建陣列、重塑、計算每行總和和原地更新。
 
 # HW1.2 Gaussian Elimination with Python and NumPy
