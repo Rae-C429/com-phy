@@ -163,6 +163,83 @@ print("x =\n",x)
 
 # HW2.2
 
+這段程式碼演示了如何使用 Python 中的 NumPy 和 Matplotlib 庫來模擬和分析一個動態系統的行為。讓我們來分析它的具體內容：
+
+## 程式碼解析
+
+1. 導入模組
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+    這裡導入了NumPy用於數值計算和Matplotlib用於繪圖的模組。
+
+2. 設定參數
+
+```python
+N = 51
+h = 10 / (N-1)
+```
+
+    定義了數據點數量 N 和步長 h，用於數值微分。
+
+3. 生成時間或空間點集
+
+```python
+x = np.zeros(51)
+a = 0
+for i in range (51):
+    x[i] = a
+    a += 0.2
+print("x", x)
+```
+
+    這裡生成了一個包含51個等間距點的數組 x，用來表示時間或空間中的點。
+
+4. 系統動態描述
+
+```python
+v = 1 - np.exp(-x)
+print("v:\n", v)
+```
+
+    這段程式碼計算了系統中某個物理量 v 隨時間或空間的變化。這裡使用了指數衰減函數來模擬系統的動態行為。
+
+5. 數值微分計算
+
+```python
+
+dv = np.zeros((N), dtype=float)
+for i in range(1, N-2):
+    dv[i] = (v[i + 1] - v[i - 1]) / (2 * h)
+print("dv:\n", dv)
+```
+
+    使用了三點差分公式來計算 v 的數值導數 dv。這裡假設 dv 是某物理量的變化率。
+
+6. 繪圖展示
+
+```python
+fig, ax = plt.subplots()
+ax.set_title('dVy / d$\\tau$ = 1 - Vy : three-point formula')
+plt.xlabel('t')
+plt.ylabel('$V_t$')
+ax.plot(x[1 : N-2], v[1 : N-2], 'r-', label='ana.')
+ax.plot(x[2 : N-2], 1 - dv[2 : N-2], 'bs', label='num.')
+ax.legend(loc='lower right')
+plt.show()
+```
+
+    這段程式碼使用Matplotlib來繪製圖形，以直觀地展示分析和數值結果。其中，紅色曲線顯示了解析解，藍色方塊點表示數值計算的結果。
+
+## 結果說明
+
+這段程式碼展示了如何通過數值方法（三點差分）來近似計算系統中某物理量的變化率，並且將結果用圖形方式呈現出來。這樣的方法在物理學和工程學中常用於分析和預測系統的動態行為。
+
+# HW3.1
+
 這段程式碼通過數值積分方法計算了兩個函數在給定範圍內的積分值。在物理學中，這些積分可以用來計算波函數的機率密度或能量分佈函數的特定性質
 
 1. H_atom 函數積分計算
@@ -193,3 +270,145 @@ print("x =\n",x)
 - 矩形法：將積分區間同樣分成多個小區間，每個小區間內用矩形面積來近似計算積分值。
 
   這兩種方法在數值計算中常用來估計函數的積分值，特別是在沒有解析解或解析解較難獲得時。
+
+# HW3.2
+
+這段程式碼展示了如何使用 Python 中的 NumPy、Matplotlib 和 SciPy 庫來進行數據插值，具體來說是使用了拉格朗日插值和三次插值。
+
+## 程式碼解析
+
+1. 導入必要的模組
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d, CubicSpline
+```
+
+    這裡導入了NumPy用於數據處理，Matplotlib用於繪圖，以及SciPy中的插值函數 interp1d 和 CubicSpline。
+
+2. 設定數據
+
+```python
+a = 0
+Ei = np.empty(shape=9)
+for i in range(9):
+    Ei[i]= a
+    a += 25
+g = np.array([10.6, 16.0, 45.0, 83.5, 52.8, 19.9, 10.8, 8.25, 4.7])
+```
+
+    這裡生成了一組實驗數據 g 和對應的能量值 Ei。
+
+3. 進行拉格朗日插值
+
+```python
+Ei_lag = np.linspace(0, 200, 200+1)
+g_lag = 0
+n = 9
+
+for i in range(n):
+    p = 1
+    for j in range(n):
+        if i != j:
+            p = p * (Ei_lag - Ei[j])/(Ei[i] - Ei[j])
+
+    g_lag = g_lag + p * g[i]
+```
+
+    這段程式碼使用了拉格朗日插值方法來估算在更廣泛能量範圍 Ei_lag 上的實驗數據 g_lag。
+
+4. 進行三次插值
+
+```python
+f_interp = CubicSpline(Ei, g)
+Ei_c = np.linspace(0, 200, 200+1)
+g_c = f_interp(Ei_c)
+```
+
+    這裡使用了 CubicSpline 函數來進行三次插值，生成了 g_c，這是在更細緻能量值範圍 Ei_c 上的插值結果。
+
+5. 繪製圖形
+
+```python
+fig, ax = plt.subplots()
+ax.plot(Ei, g, 'o', markerfacecolor='none', markeredgecolor='r', label='data')
+ax.plot(Ei_lag, g_lag, 'b--', label='Lagrange')
+ax.plot(Ei_c, g_c, 'r-', label='Cubic')
+ax.legend()
+```
+
+    最後，使用Matplotlib來繪製數據點 Ei 和 g，以及拉格朗日插值和三次插值的比較圖。
+
+# HW4.1
+
+這段程式碼模擬了黑體輻射的特性，並計算了在不同溫度下的最大發射波長。
+
+## 程式碼解析
+
+1.黑體輻射函數
+
+```python
+def black(wav, T):
+    h = 6.62607515e-34  # 普朗克常數
+    hc = 1.98644586e-25  # 普朗克常數乘以光速
+    k = 1.380649e-23  # 玻爾茨曼常數
+    a = 8.0 * np.pi * hc
+    b = hc / (wav * k * T)
+    intensity = a / ((wav**5) * (np.exp(b) - 1.0))
+    return intensity
+```
+
+    這裡定義了黑體輻射的強度函數 black(wav, T)，根據溫度 T 和波長 wav 計算特定溫度下的輻射強度。
+
+2. 尋找最大值函數
+
+```python
+def maximum(a):
+    max_x = 0
+    for i in range(len(a)):
+        if a[max_x] < a[i]:
+            max_x = i
+    return max_x
+```
+
+    這個函數 maximum(a) 用來找出數組 a 中的最大值索引，即最大輻射強度對應的波長索引。
+
+3. 計算不同溫度下的最大發射波長
+
+```python
+wav = np.arange(1e-9, 2.0e-6, 1e-10)
+
+ints35 = black(wav, 3500)
+print("3500 max is:", wav[maximum(ints35)])
+
+ints40 = black(wav, 4000)
+print("4000 max is:", wav[maximum(ints40)])
+
+ints45 = black(wav, 4500)
+print("4500 max is:", wav[maximum(ints45)])
+
+ints50 = black(wav, 5000)
+print("5000 max is:", wav[maximum(ints50)])
+
+ints55 = black(wav, 5500)
+print("5500 max is:", wav[maximum(ints55)])
+```
+
+    在這裡，使用 np.arange 生成一系列波長 wav，然後分別計算了在3500K、4000K、4500K、5000K和5500K下的黑體輻射強度 ints35、ints40、ints45、ints50 和 ints55，並找到每個溫度下的最大發射波長。
+
+4. 繪製圖形
+
+```python
+plt.plot(wav * 1e9, ints35, 'b-', label='3500K')
+plt.plot(wav * 1e9, ints40, 'g-', label='4000K')
+plt.plot(wav * 1e9, ints45, 'r-', label='4500K')
+plt.plot(wav * 1e9, ints50, 'c-', label='5000K')
+plt.plot(wav * 1e9, ints55, 'm-', label='5500K')
+plt.xlabel("Wavelength (nm)")
+plt.ylabel("Spectral energy density")
+plt.legend()
+plt.show()
+```
+
+    最後，使用Matplotlib將不同溫度下的黑體輻射強度曲線以及其最大發射波長可視化。橫軸為波長（單位：納米），縱軸為特定能量密度。每個溫度都使用不同顏色的線條表示，並使用圖例標示溫度。
