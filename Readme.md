@@ -53,7 +53,7 @@ print(a)
 
 # HW1.2 Gaussian Elimination with Python and NumPy
 
-![電路圖](phto/Electric_circuit.jpg)
+![電路圖](photo/Electric_circuit.jpg)
 這段程式碼是用來解決一個線性電路的節點電壓問題，使用 Python 和 NumPy 來實現高斯消去法，並使用矩陣的逆來解線性方程組，計算各個支路的電流。
 
 ## 程式碼解釋
